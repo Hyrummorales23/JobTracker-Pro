@@ -1,4 +1,5 @@
-// pages/Dashboard.jsx - Main dashboard after login
+// pages/Dashboard.jsx - Main dashboard after login with job CRUD functionality
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JobForm from '../components/JobForm';
 import JobList from '../components/JobList';
@@ -6,6 +7,7 @@ import JobList from '../components/JobList';
 function Dashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -13,8 +15,14 @@ function Dashboard() {
     navigate('/login');
   };
 
+  // Refresh the job list when a new job is added
+  const handleJobAdded = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Header */}
       <header className="bg-white shadow">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
           <h1 className="text-2xl font-bold text-gray-800">JobTracker Pro</h1>
@@ -30,17 +38,18 @@ function Dashboard() {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800">Application Tracker</h2>
           <p className="mt-2 text-gray-600">
-            Sprint 2 layout structure for adding and viewing job applications.
+            Add and manage your job applications below.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-          <JobForm />
-          <JobList />
+          <JobForm onJobAdded={handleJobAdded} />
+          <JobList key={refreshKey} />
         </div>
       </main>
     </div>

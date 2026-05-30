@@ -2,24 +2,22 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-// Define what a user looks like in the database
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: true,
     trim: true
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: true,
     unique: true,
     lowercase: true,
     trim: true
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: 6
+    required: true
   },
   createdAt: {
     type: Date,
@@ -27,22 +25,23 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Before saving a user, encrypt their password
+// Hash password before saving
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it's new or changed
-  if (!this.isModified('password')) return next();
+  // Only hash if password is modified
+  if (!this.isModified('password')) {
+    return next();
+  }
   
   try {
-    // Generate a salt and hash the password
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 });
 
-// Method to check if entered password matches the stored hash
+// Method to compare password for login
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };

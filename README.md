@@ -30,3 +30,19 @@ The first sprint focuses on project setup, repository structure, initial React a
 - "The best way to predict the future is to create it." - Peter Drucker
 - "First, solve the problem. Then, write the code." - John Johnson
 - "Success is the sum of small efforts, repeated day in and day out." - Robert Collier
+
+## Sprint 2 Progress (Week 4)
+
+### Completed Features
+- ✅ User Authentication (Signup/Login with JWT)
+- ✅ Password Hashing with bcrypt
+- ✅ Full Job CRUD (Create, Read, Update, Delete)
+- ✅ Notes per application
+- ✅ MongoDB Atlas integration
+- ✅ Responsive Dashboard with JobForm and JobList
+
+### Sprint 2 Tasks Completed
+- Created Job model and API routes
+- Built functional JobForm, JobList, and JobCard components
+- Connected frontend to backend with Axios
+- Implemented auto-refresh after adding jobs
