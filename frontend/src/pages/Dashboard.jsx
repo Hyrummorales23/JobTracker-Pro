@@ -1,5 +1,5 @@
 // pages/Dashboard.jsx - Main dashboard after login with job CRUD functionality
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JobForm from '../components/JobForm';
 import JobList from '../components/JobList';

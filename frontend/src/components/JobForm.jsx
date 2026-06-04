@@ -1,5 +1,5 @@
 // components/JobForm.jsx - Form to add new job applications
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5001/api';
