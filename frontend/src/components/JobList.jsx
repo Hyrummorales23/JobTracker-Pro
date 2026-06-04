@@ -1,5 +1,5 @@
 // components/JobList.jsx - Displays all job applications for the user
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import JobCard from './JobCard';
 
@@ -28,6 +28,7 @@ function JobList() {
 
   // Load jobs when component mounts
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadJobs();
   }, []);
 
