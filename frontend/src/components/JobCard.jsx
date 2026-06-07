@@ -152,7 +152,14 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
         </p>
         <p>
           <span className="font-medium text-gray-700">Job Link:</span>{' '}
-          {job.link ? <a href={job.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Link</a> : 'N/A'}
+          {job.link ? (() => {
+  let linkUrl = job.link;
+  // Add https:// if the link doesn't start with http:// or https://
+  if (!linkUrl.startsWith('http://') && !linkUrl.startsWith('https://')) {
+    linkUrl = 'https://' + linkUrl;
+  }
+  return <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Link</a>;
+})() : 'N/A'}
         </p>
       </div>
       

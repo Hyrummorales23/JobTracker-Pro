@@ -1,48 +1,14 @@
-import {
-  Cell,
-  Pie,
-  PieChart as RechartsPieChart,
-  ResponsiveContainer,
-} from 'recharts';
+// components/PieChart.jsx - Placeholder for status breakdown chart
+import React from 'react';
 
-const statusData = [
-  { name: 'Wishlist', value: 3, color: '#64748b' },
-  { name: 'Applied', value: 8, color: '#2563eb' },
-  { name: 'Interview', value: 4, color: '#f59e0b' },
-  { name: 'Offer', value: 1, color: '#16a34a' },
-  { name: 'Rejected', value: 2, color: '#dc2626' },
-];
-
-function PieChart() {
+function PieChart({ data }) {
   return (
-    <section className="rounded-lg bg-white p-6 shadow">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-gray-800">Status Breakdown</h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Basic pie chart structure for Sprint 3 dashboard data.
-        </p>
+    <div className="bg-white p-4 rounded-lg shadow">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">Status Breakdown</h3>
+      <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded">
+        <p className="text-gray-500">Pie chart will appear here</p>
       </div>
-
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsPieChart>
-            <Pie
-              data={statusData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={90}
-              label
-            >
-              {statusData.map((entry) => (
-                <Cell key={entry.name} fill={entry.color} />
-              ))}
-            </Pie>
-          </RechartsPieChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
+    </div>
   );
 }
 

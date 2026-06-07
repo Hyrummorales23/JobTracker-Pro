@@ -1,12 +1,15 @@
-// pages/Dashboard.jsx - Main dashboard after login with job CRUD functionality
-import { useState, useCallback } from 'react';
+// pages/Dashboard.jsx - Complete Dashboard with JobForm, Kanban, and Charts
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JobForm from '../components/JobForm';
 import JobList from '../components/JobList';
+import KanbanBoard from '../components/KanbanBoard';
+import ChartsDashboard from '../components/ChartsDashboard';
 
 function Dashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [view, setView] = useState('joblist'); // 'joblist', 'kanban', or 'charts'
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleLogout = () => {
@@ -15,7 +18,7 @@ function Dashboard() {
     navigate('/login');
   };
 
-  // Refresh the job list when a new job is added
+  // Refresh components when a new job is added
   const handleJobAdded = useCallback(() => {
     setRefreshKey(prev => prev + 1);
   }, []);
@@ -38,19 +41,52 @@ function Dashboard() {
         </div>
       </header>
 
+      {/* Navigation Tabs */}
+      <div className="mx-auto max-w-7xl px-4 pt-6">
+        <div className="flex gap-2 border-b border-gray-200">
+          <button
+            onClick={() => setView('joblist')}
+            className={`px-4 py-2 font-medium rounded-t-lg transition ${
+              view === 'joblist'
+                ? 'bg-white text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Jobs List
+          </button>
+          <button
+            onClick={() => setView('kanban')}
+            className={`px-4 py-2 font-medium rounded-t-lg transition ${
+              view === 'kanban'
+                ? 'bg-white text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Kanban Board
+          </button>
+          <button
+            onClick={() => setView('charts')}
+            className={`px-4 py-2 font-medium rounded-t-lg transition ${
+              view === 'charts'
+                ? 'bg-white text-blue-600 border-b-2 border-blue-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Dashboard Charts
+          </button>
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800">Application Tracker</h2>
-          <p className="mt-2 text-gray-600">
-            Add and manage your job applications below.
-          </p>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-          <JobForm onJobAdded={handleJobAdded} />
-          <JobList key={refreshKey} />
-        </div>
+        {view === 'joblist' && (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+            <JobForm onJobAdded={handleJobAdded} />
+            <JobList key={refreshKey} />
+          </div>
+        )}
+        {view === 'kanban' && <KanbanBoard key={refreshKey} />}
+        {view === 'charts' && <ChartsDashboard />}
       </main>
     </div>
   );

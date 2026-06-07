@@ -115,4 +115,25 @@ router.delete('/:id', authenticate, async (req, res) => {
   }
 });
 
+// PATCH - Update just the status of a job (for drag-and-drop)
+router.patch('/:id/status', authenticate, async (req, res) => {
+  try {
+    const { status } = req.body;
+    
+    const job = await Job.findOne({ _id: req.params.id, userId: req.userId });
+    
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+    
+    job.status = status;
+    await job.save();
+    
+    res.json(job);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 module.exports = router;

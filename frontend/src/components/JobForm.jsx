@@ -136,7 +136,7 @@ function JobForm({ onJobAdded }) {
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700">Job Link</label>
           <input
-            type="url"
+            type="text or url"
             name="link"
             value={formData.link}
             onChange={handleChange}

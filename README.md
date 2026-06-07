@@ -46,3 +46,18 @@ The first sprint focuses on project setup, repository structure, initial React a
 - Built functional JobForm, JobList, and JobCard components
 - Connected frontend to backend with Axios
 - Implemented auto-refresh after adding jobs
+
+## Sprint 3 Progress (Week 5)
+
+### Completed Features
+- ✅ Kanban Board with drag-and-drop functionality
+- ✅ Dashboard Charts (applications per week, status breakdown)
+- ✅ Job status updates via drag-and-drop
+- ✅ Visual data representation with Recharts
+
+### Sprint 3 Tasks Completed
+- Installed react-beautiful-dnd and recharts
+- Created KanbanBoard component with draggable job cards
+- Implemented drag-and-drop to update job status in database
+- Added BarChart and PieChart components
+- Connected charts to backend data
