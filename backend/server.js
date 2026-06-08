@@ -10,6 +10,7 @@ dotenv.config();
 // Import route files
 const authRoutes = require('./routes/auth');
 const jobsRoutes = require('./routes/jobs');
+const questionsRoutes = require('./routes/questions');
 
 // Initialize express app
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.json());            // Parses JSON request bodies
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobsRoutes);
+app.use('/api/questions', questionsRoutes);
 
 // Test route to check if server is running
 app.get('/api/health', (req, res) => {
