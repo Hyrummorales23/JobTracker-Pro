@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001/api';
+import { API_URL } from '../config';
 
 function JobCard({ job, onJobDeleted, onJobUpdated }) {
   const [isEditing, setIsEditing] = useState(false);
