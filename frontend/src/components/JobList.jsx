@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import JobCard from './JobCard';
 
-const API_URL = 'http://localhost:5001/api';
+import { API_URL } from '../config';
 
 function JobList() {
   const [jobs, setJobs] = useState([]);

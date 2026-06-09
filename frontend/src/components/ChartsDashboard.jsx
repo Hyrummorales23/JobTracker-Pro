@@ -15,7 +15,7 @@ import {
   Cell
 } from 'recharts';
 
-const API_URL = 'http://localhost:5001/api';
+import { API_URL } from '../config';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
