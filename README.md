@@ -61,3 +61,15 @@ The first sprint focuses on project setup, repository structure, initial React a
 - Implemented drag-and-drop to update job status in database
 - Added BarChart and PieChart components
 - Connected charts to backend data
+
+## Live Demo
+
+- **Frontend:** https://jobtracker-pro.vercel.app
+- **Backend API:** https://jobtracker-pro-api.onrender.com/api/health
+
+## Deployment
+
+This app is deployed on:
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Database:** MongoDB Atlas

@@ -18,7 +18,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5001/api';
+import { API_URL } from '../config';
 
 const columns = ['Wishlist', 'Applied', 'Interview', 'Offer', 'Rejected'];
 
