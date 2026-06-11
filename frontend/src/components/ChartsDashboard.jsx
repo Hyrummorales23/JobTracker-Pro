@@ -1,23 +1,15 @@
-// components/ChartsDashboard.jsx - Displays charts for job applications
+// components/ChartsDashboard.jsx - Spotify-inspired charts dashboard
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
-
 import { API_URL } from '../config';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const statusColors = {
+  Wishlist: '#6b7280',
+  Applied: '#3b82f6',
+  Interview: '#f59e0b',
+  Offer: '#10b981',
+  Rejected: '#ef4444',
+};
 
 function ChartsDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -41,20 +33,17 @@ function ChartsDashboard() {
     }
   };
 
-  // Calculate applications per week (last 8 weeks)
   const getWeeklyData = () => {
     const weeklyMap = new Map();
     const today = new Date();
     
-    // Initialize last 8 weeks
-    for (let i = 7; i >= 0; i--) {
+    for (let i = 5; i >= 0; i--) {
       const weekStart = new Date(today);
       weekStart.setDate(today.getDate() - (today.getDay() + 7 * i));
       const weekLabel = `${weekStart.getMonth() + 1}/${weekStart.getDate()}`;
       weeklyMap.set(weekLabel, 0);
     }
     
-    // Count applications per week
     jobs.forEach(job => {
       if (job.dateApplied) {
         const jobDate = new Date(job.dateApplied);
@@ -74,7 +63,6 @@ function ChartsDashboard() {
     }));
   };
 
-  // Calculate status breakdown for pie chart
   const getStatusData = () => {
     const statusCounts = {
       Wishlist: 0,
@@ -90,12 +78,9 @@ function ChartsDashboard() {
       }
     });
     
-    return Object.entries(statusCounts)
-      .filter(([_, count]) => count > 0)
-      .map(([name, value]) => ({ name, value }));
+    return statusCounts;
   };
 
-  // Calculate success rate
   const getSuccessRate = () => {
     const total = jobs.length;
     const offers = jobs.filter(job => job.status === 'Offer').length;
@@ -106,11 +91,15 @@ function ChartsDashboard() {
   const weeklyData = getWeeklyData();
   const statusData = getStatusData();
   const successRate = getSuccessRate();
+  const totalJobs = jobs.length;
+  const maxApplications = Math.max(...weeklyData.map(d => d.applications), 1);
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
-        <p className="text-center text-gray-500">Loading charts...</p>
+      <div className="bg-[#181818] rounded-xl p-8 shadow-xl">
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1DB954]"></div>
+        </div>
       </div>
     );
   }
@@ -118,61 +107,77 @@ function ChartsDashboard() {
   return (
     <div className="space-y-6">
       {/* Success Rate Card */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow p-6 text-white">
+      <div className="bg-gradient-to-r from-[#1DB954] to-[#1ed760] rounded-xl shadow-xl p-6 text-black">
         <h3 className="text-lg font-semibold mb-2">Success Rate</h3>
-        <p className="text-4xl font-bold">{successRate}%</p>
-        <p className="text-sm opacity-90 mt-2">
-          {jobs.length} total applications, {jobs.filter(j => j.status === 'Offer').length} offers
+        <p className="text-5xl font-bold">{successRate}%</p>
+        <p className="text-sm opacity-80 mt-2">
+          {totalJobs} total applications, {jobs.filter(j => j.status === 'Offer').length} offers
         </p>
       </div>
 
       {/* Bar Chart - Applications Per Week */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Applications Per Week</h3>
+      <div className="bg-[#181818] rounded-xl p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-white mb-4">Applications Per Week</h3>
         {weeklyData.some(d => d.applications > 0) ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={weeklyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="applications" fill="#3b82f6" name="Applications" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="space-y-3">
+            {weeklyData.map((item, idx) => (
+              <div key={idx}>
+                <div className="flex justify-between text-sm text-[#B3B3B3] mb-1">
+                  <span>{item.name}</span>
+                  <span>{item.applications}</span>
+                </div>
+                <div className="w-full bg-[#282828] rounded-full h-6 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[#1DB954] to-[#1ed760] h-6 rounded-full flex items-center justify-end pr-2 text-xs text-black font-medium"
+                    style={{ width: `${(item.applications / maxApplications) * 100}%` }}
+                  >
+                    {item.applications > 0 && item.applications}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded">
-            <p className="text-gray-500">No data yet. Add job applications to see charts!</p>
+          <div className="h-40 flex items-center justify-center border-2 border-dashed border-[#282828] rounded-lg">
+            <p className="text-[#B3B3B3]">No data yet. Add job applications to see charts!</p>
           </div>
         )}
       </div>
 
-      {/* Pie Chart - Status Breakdown */}
-      <div className="bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Status Breakdown</h3>
-        {statusData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={statusData}
-                cx="50%"
-                cy="50%"
-                labelLine={true}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {statusData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      {/* Status Breakdown */}
+      <div className="bg-[#181818] rounded-xl p-6 shadow-xl">
+        <h3 className="text-lg font-semibold text-white mb-4">Status Breakdown</h3>
+        {totalJobs > 0 ? (
+          <div className="space-y-3">
+            {Object.entries(statusData).map(([status, count]) => (
+              count > 0 && (
+                <div key={status}>
+                  <div className="flex justify-between text-sm text-[#B3B3B3] mb-1">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: statusColors[status] }}
+                      />
+                      <span>{status}</span>
+                    </div>
+                    <span>{count} ({Math.round((count / totalJobs) * 100)}%)</span>
+                  </div>
+                  <div className="w-full bg-[#282828] rounded-full h-3 overflow-hidden">
+                    <div
+                      className="h-3 rounded-full transition-all duration-500"
+                      style={{ 
+                        width: `${(count / totalJobs) * 100}%`,
+                        backgroundColor: statusColors[status]
+                      }}
+                    />
+                  </div>
+                </div>
+              )
+            ))}
+          </div>
         ) : (
-          <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded">
-            <p className="text-gray-500">No data yet. Add job applications to see charts!</p>
+          <div className="h-40 flex items-center justify-center border-2 border-dashed border-[#282828] rounded-lg">
+            <p className="text-[#B3B3B3]">No data yet. Add job applications to see charts!</p>
           </div>
         )}
       </div>

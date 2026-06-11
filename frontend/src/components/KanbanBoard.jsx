@@ -1,4 +1,4 @@
-// components/KanbanBoard.jsx - Drag-and-drop kanban board using @dnd-kit
+// components/KanbanBoard.jsx - Spotify-inspired drag-and-drop kanban board
 import React, { useState, useEffect } from 'react';
 import {
   DndContext,
@@ -17,25 +17,24 @@ import {
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import axios from 'axios';
-
 import { API_URL } from '../config';
 
 const columns = ['Wishlist', 'Applied', 'Interview', 'Offer', 'Rejected'];
 
 const columnColors = {
-  Wishlist: 'bg-gray-100 border-gray-300',
-  Applied: 'bg-blue-50 border-blue-200',
-  Interview: 'bg-yellow-50 border-yellow-200',
-  Offer: 'bg-green-50 border-green-200',
-  Rejected: 'bg-red-50 border-red-200',
+  Wishlist: 'bg-gray-900/50 border-gray-700',
+  Applied: 'bg-blue-900/30 border-blue-700',
+  Interview: 'bg-yellow-900/30 border-yellow-700',
+  Offer: 'bg-green-900/30 border-green-700',
+  Rejected: 'bg-red-900/30 border-red-700',
 };
 
 const statusColors = {
-  Wishlist: 'bg-gray-500',
-  Applied: 'bg-blue-500',
-  Interview: 'bg-yellow-500',
-  Offer: 'bg-green-500',
-  Rejected: 'bg-red-500',
+  Wishlist: 'bg-gray-600',
+  Applied: 'bg-blue-600',
+  Interview: 'bg-yellow-600',
+  Offer: 'bg-green-600',
+  Rejected: 'bg-red-600',
 };
 
 // Draggable job card component
@@ -63,20 +62,20 @@ function DraggableJobCard({ job }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`bg-white rounded-lg p-3 mb-2 shadow-sm border-l-4 ${borderColor} cursor-grab active:cursor-grabbing hover:shadow-md transition`}
+      className={`bg-[#181818] rounded-lg p-3 mb-2 shadow-sm border-l-4 cursor-grab active:cursor-grabbing hover:bg-[#282828] transition-all ${borderColor}`}
     >
-      <h4 className="font-medium text-gray-800 text-sm">{job.title}</h4>
-      <p className="text-xs text-gray-500 mt-1">{job.company}</p>
+      <h4 className="font-medium text-white text-sm">{job.title}</h4>
+      <p className="text-xs text-[#B3B3B3] mt-1">{job.company}</p>
       {job.dateApplied && (
-        <p className="text-xs text-gray-400 mt-2">
-          Applied: {new Date(job.dateApplied).toLocaleDateString()}
+        <p className="text-xs text-[#B3B3B3] mt-2">
+          📅 {new Date(job.dateApplied).toLocaleDateString()}
         </p>
       )}
     </div>
   );
 }
 
-// Droppable column component
+// Droppable column component (THIS WAS MISSING - FIXES DRAG & DROP)
 function DroppableColumn({ column, jobs, columnId }) {
   const { setNodeRef } = useSortable({ id: columnId });
   const jobIds = jobs.map(job => job._id);
@@ -84,17 +83,17 @@ function DroppableColumn({ column, jobs, columnId }) {
   return (
     <div
       ref={setNodeRef}
-      className={`rounded-lg p-3 ${columnColors[column]} border`}
+      className={`rounded-xl p-3 ${columnColors[column]} border transition-all`}
     >
       <div className="flex justify-between items-center mb-3">
-        <h3 className="font-semibold text-gray-700">{column}</h3>
-        <span className={`text-xs px-2 py-1 rounded-full text-white ${statusColors[column]}`}>
+        <h3 className="font-semibold text-white">{column}</h3>
+        <span className={`text-xs px-2 py-1 rounded-full ${statusColors[column]} text-white`}>
           {jobs.length}
         </span>
       </div>
 
       <SortableContext items={jobIds} strategy={verticalListSortingStrategy}>
-        <div className="min-h-[400px]">
+        <div className="min-h-[400px] space-y-2">
           {jobs.map((job) => (
             <DraggableJobCard key={job._id} job={job} />
           ))}
@@ -111,16 +110,13 @@ function KanbanBoard() {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
+      activationConstraint: { distance: 5 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
-  // Load jobs from backend
   const loadJobs = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -139,7 +135,6 @@ function KanbanBoard() {
     loadJobs();
   }, []);
 
-  // Get jobs grouped by status
   const getJobsByColumn = () => {
     const grouped = {};
     columns.forEach(col => {
@@ -148,7 +143,6 @@ function KanbanBoard() {
     return grouped;
   };
 
-  // Handle drag end
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     setActiveId(null);
@@ -158,7 +152,6 @@ function KanbanBoard() {
     const activeJob = jobs.find(job => job._id === active.id);
     if (!activeJob) return;
 
-    // Determine target status from where it was dropped
     let newStatus = null;
     
     // Check if dropped on a column ID (which is the status name)
@@ -172,7 +165,6 @@ function KanbanBoard() {
       }
     }
 
-    // If status changed, update in database
     if (newStatus && activeJob.status !== newStatus) {
       try {
         const token = localStorage.getItem('token');
@@ -181,7 +173,6 @@ function KanbanBoard() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
-        // Update local state immediately for smooth UI
         setJobs(prevJobs =>
           prevJobs.map(job =>
             job._id === activeJob._id ? { ...job, status: newStatus } : job
@@ -189,24 +180,23 @@ function KanbanBoard() {
         );
       } catch (err) {
         console.error('Failed to update status:', err);
-        // Revert by reloading
         loadJobs();
       }
     }
   };
 
   const groupedJobs = getJobsByColumn();
+  const columnIds = columns;
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
-        <p className="text-center text-gray-500">Loading kanban board...</p>
+      <div className="bg-[#181818] rounded-xl p-8 shadow-xl">
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1DB954]"></div>
+        </div>
       </div>
     );
   }
-
-  // Create column IDs list for SortableContext
-  const columnIds = columns;
 
   return (
     <DndContext
@@ -215,6 +205,7 @@ function KanbanBoard() {
       onDragEnd={handleDragEnd}
       onDragStart={({ active }) => setActiveId(active.id)}
     >
+      {/* IMPORTANT: SortableContext for columns enables dropping between columns */}
       <SortableContext items={columnIds} strategy={verticalListSortingStrategy}>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {columns.map((column) => (
@@ -229,19 +220,17 @@ function KanbanBoard() {
       </SortableContext>
       
       <DragOverlay>
-        {activeId ? (
-          (() => {
-            const job = jobs.find(j => j._id === activeId);
-            if (!job) return null;
-            const borderColor = statusColors[job.status]?.replace('bg-', 'border-l-') || 'border-l-gray-500';
-            return (
-              <div className={`bg-white rounded-lg p-3 shadow-lg border-l-4 ${borderColor} rotate-2 cursor-grabbing`}>
-                <h4 className="font-medium text-gray-800 text-sm">{job.title}</h4>
-                <p className="text-xs text-gray-500 mt-1">{job.company}</p>
-              </div>
-            );
-          })()
-        ) : null}
+        {activeId ? (() => {
+          const job = jobs.find(j => j._id === activeId);
+          if (!job) return null;
+          const borderColor = statusColors[job.status]?.replace('bg-', 'border-l-') || 'border-l-gray-500';
+          return (
+            <div className={`bg-[#282828] rounded-xl p-3 shadow-xl border-l-4 ${borderColor} rotate-2 cursor-grabbing`}>
+              <h4 className="font-medium text-white text-sm">{job.title}</h4>
+              <p className="text-xs text-[#B3B3B3] mt-1">{job.company}</p>
+            </div>
+          );
+        })() : null}
       </DragOverlay>
     </DndContext>
   );

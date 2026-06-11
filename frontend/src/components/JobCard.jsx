@@ -1,7 +1,6 @@
-// components/JobCard.jsx - Displays a single job application
-import { useState } from 'react';
+// components/JobCard.jsx - Spotify-inspired job card with edit/delete
+import React, { useState } from 'react';
 import axios from 'axios';
-
 import { API_URL } from '../config';
 
 function JobCard({ job, onJobDeleted, onJobUpdated }) {
@@ -16,13 +15,27 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
   });
   const [loading, setLoading] = useState(false);
 
-  // Handle edit input changes
+  const statusIcons = {
+    Wishlist: '⭐',
+    Applied: '📝',
+    Interview: '🎯',
+    Offer: '🎉',
+    Rejected: '❌'
+  };
+
+  const statusColors = {
+    Wishlist: 'bg-gray-500/20 text-gray-300 border-gray-500',
+    Applied: 'bg-blue-500/20 text-blue-300 border-blue-500',
+    Interview: 'bg-yellow-500/20 text-yellow-300 border-yellow-500',
+    Offer: 'bg-green-500/20 text-green-300 border-green-500',
+    Rejected: 'bg-red-500/20 text-red-300 border-red-500',
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Update job
   const handleUpdate = async () => {
     setLoading(true);
     try {
@@ -39,7 +52,6 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
     }
   };
 
-  // Delete job
   const handleDelete = async () => {
     if (!confirm('Delete this job application?')) return;
     
@@ -57,25 +69,16 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
     }
   };
 
-  // Status color mapping
-  const statusColors = {
-    Wishlist: 'bg-gray-100 text-gray-700',
-    Applied: 'bg-blue-100 text-blue-700',
-    Interview: 'bg-yellow-100 text-yellow-700',
-    Offer: 'bg-green-100 text-green-700',
-    Rejected: 'bg-red-100 text-red-700'
-  };
-
   if (isEditing) {
     return (
-      <article className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="bg-[#282828] rounded-xl p-4 border border-[#3e3e3e]">
         <div className="grid gap-3">
           <input
             type="text"
             name="company"
             value={formData.company}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2"
+            className="spotify-input"
             placeholder="Company"
           />
           <input
@@ -83,7 +86,7 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2"
+            className="spotify-input"
             placeholder="Job Title"
           />
           <input
@@ -91,25 +94,25 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
             name="dateApplied"
             value={formData.dateApplied}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2"
+            className="spotify-input"
           />
           <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2"
+            className="spotify-select"
           >
-            <option value="Wishlist">Wishlist</option>
-            <option value="Applied">Applied</option>
-            <option value="Interview">Interview</option>
-            <option value="Offer">Offer</option>
-            <option value="Rejected">Rejected</option>
+            <option value="Wishlist">⭐ Wishlist</option>
+            <option value="Applied">📝 Applied</option>
+            <option value="Interview">🎯 Interview</option>
+            <option value="Offer">🎉 Offer</option>
+            <option value="Rejected">❌ Rejected</option>
           </select>
           <textarea
             name="notes"
             value={formData.notes}
             onChange={handleChange}
-            className="rounded-md border border-gray-300 px-3 py-2"
+            className="spotify-input"
             rows="2"
             placeholder="Notes"
           />
@@ -117,74 +120,75 @@ function JobCard({ job, onJobDeleted, onJobUpdated }) {
             <button
               onClick={handleUpdate}
               disabled={loading}
-              className="rounded-md bg-green-600 px-3 py-1 text-white hover:bg-green-700"
+              className="flex-1 bg-[#1DB954] text-black font-medium py-2 rounded-full hover:bg-[#1ed760] transition"
             >
               Save
             </button>
             <button
               onClick={() => setIsEditing(false)}
-              className="rounded-md bg-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-400"
+              className="flex-1 bg-[#282828] text-white py-2 rounded-full hover:bg-[#3e3e3e] transition"
             >
               Cancel
             </button>
           </div>
         </div>
-      </article>
+      </div>
     );
   }
 
-  return (
-    <article className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">{job.title}</h3>
-          <p className="text-sm text-gray-600">{job.company}</p>
-        </div>
-        <span className={`w-fit rounded-full px-3 py-1 text-sm font-medium ${statusColors[job.status] || 'bg-gray-100 text-gray-700'}`}>
-          {job.status}
-        </span>
-      </div>
-      
-      <div className="mt-4 grid gap-3 text-sm text-gray-600 sm:grid-cols-2">
-        <p>
-          <span className="font-medium text-gray-700">Date Applied:</span>{' '}
-          {job.dateApplied ? new Date(job.dateApplied).toLocaleDateString() : 'N/A'}
-        </p>
-        <p>
-          <span className="font-medium text-gray-700">Job Link:</span>{' '}
-          {job.link ? (() => {
   let linkUrl = job.link;
-  // Add https:// if the link doesn't start with http:// or https://
-  if (!linkUrl.startsWith('http://') && !linkUrl.startsWith('https://')) {
+  if (linkUrl && !linkUrl.startsWith('http://') && !linkUrl.startsWith('https://')) {
     linkUrl = 'https://' + linkUrl;
   }
-  return <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Link</a>;
-})() : 'N/A'}
-        </p>
+
+  return (
+    <div className="bg-[#282828] rounded-xl p-4 hover:bg-[#3e3e3e] transition-all duration-200">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <h3 className="text-lg font-semibold text-white">{job.title}</h3>
+            <span className={`text-xs px-2 py-1 rounded-full border ${statusColors[job.status]}`}>
+              {statusIcons[job.status]} {job.status}
+            </span>
+          </div>
+          <p className="text-[#B3B3B3] text-sm">{job.company}</p>
+        </div>
+      </div>
+      
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#B3B3B3]">
+        {job.dateApplied && (
+          <span>📅 Applied: {new Date(job.dateApplied).toLocaleDateString()}</span>
+        )}
+        {linkUrl && (
+          <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[#1DB954] hover:underline">
+            🔗 Job Link
+          </a>
+        )}
       </div>
       
       {job.notes && (
-        <div className="mt-4 rounded-md bg-gray-50 p-3">
-          <h4 className="text-sm font-semibold text-gray-700">Notes</h4>
-          <p className="mt-1 text-sm text-gray-600">{job.notes}</p>
+        <div className="mt-3 pt-3 border-t border-[#3e3e3e]">
+          <p className="text-sm text-[#B3B3B3]">
+            <span className="font-medium text-white">📝 Notes:</span> {job.notes}
+          </p>
         </div>
       )}
       
-      <div className="mt-4 flex gap-2">
+      <div className="mt-3 flex gap-3">
         <button
           onClick={() => setIsEditing(true)}
-          className="text-sm text-blue-600 hover:underline"
+          className="text-sm text-[#B3B3B3] hover:text-white transition"
         >
-          Edit
+          ✏️ Edit
         </button>
         <button
           onClick={handleDelete}
-          className="text-sm text-red-600 hover:underline"
+          className="text-sm text-red-400 hover:text-red-300 transition"
         >
-          Delete
+          🗑️ Delete
         </button>
       </div>
-    </article>
+    </div>
   );
 }
 
