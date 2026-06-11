@@ -127,9 +127,3 @@ The frontend automatically uses the local API during development and the Render 
 - Configured production API URLs
 - Deployed the frontend to Vercel and backend to Render
 - Tested authentication, job CRUD, Kanban status updates, and question bank operations locally and in production
-
-## Team Quotes
-
-- "The best way to predict the future is to create it." - Peter Drucker
-- "First, solve the problem. Then, write the code." - John Johnson
-- "Success is the sum of small efforts, repeated day in and day out." - Robert Collier
