@@ -64,7 +64,7 @@ The first sprint focuses on project setup, repository structure, initial React a
 
 ## Live Demo
 
-- **Frontend:** https://jobtracker-pro.vercel.app
+- **Frontend:** https://job-tracker-pro-xi.vercel.app/login
 - **Backend API:** https://jobtracker-pro-api.onrender.com/api/health
 
 ## Deployment
