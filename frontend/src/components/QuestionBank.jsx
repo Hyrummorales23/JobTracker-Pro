@@ -1,7 +1,6 @@
-// components/QuestionBank.jsx - Interview question bank
+// components/QuestionBank.jsx - Spotify-inspired interview question bank
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import { API_URL } from '../config';
 
 function QuestionBank() {
@@ -15,7 +14,6 @@ function QuestionBank() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Load questions
   const loadQuestions = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -34,17 +32,20 @@ function QuestionBank() {
     loadQuestions();
   }, []);
 
-  // Handle form input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Add question
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!formData.question.trim()) {
+      setError('Question is required');
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -53,7 +54,7 @@ function QuestionBank() {
       });
       
       setFormData({ question: '', category: 'General', answer: '' });
-      setSuccess('Question added!');
+      setSuccess('Question added successfully!');
       loadQuestions();
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -61,7 +62,6 @@ function QuestionBank() {
     }
   };
 
-  // Delete question
   const handleDelete = async (id) => {
     if (!confirm('Delete this question?')) return;
     
@@ -73,102 +73,134 @@ function QuestionBank() {
       loadQuestions();
     } catch (err) {
       console.error('Delete failed:', err);
+      setError('Failed to delete question');
     }
   };
 
   if (loading) {
-    return <div className="bg-white p-6 rounded-lg shadow">Loading questions...</div>;
+    return (
+      <div className="bg-[#181818] rounded-xl p-8 shadow-xl">
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1DB954]"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)]">
       {/* Add Question Form */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Add Interview Question</h2>
+      <div className="bg-[#181818] rounded-xl p-6 shadow-xl">
+        <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+          <span>❓</span> Add Interview Question
+        </h2>
         
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">{error}</div>}
-        {success && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">{success}</div>}
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
+            {error}
+          </div>
+        )}
         
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Question *</label>
+        {success && (
+          <div className="mb-4 p-3 bg-[#1DB954]/10 border border-[#1DB954] rounded-lg text-[#1DB954] text-sm">
+            {success}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#B3B3B3] mb-1">Question *</label>
             <textarea
               name="question"
               value={formData.question}
               onChange={handleChange}
               required
-              rows="2"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+              rows="3"
+              className="spotify-input resize-none"
               placeholder="e.g., What is closures in JavaScript?"
             />
           </div>
           
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Category</label>
+          <div>
+            <label className="block text-sm font-medium text-[#B3B3B3] mb-1">Category</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="spotify-select"
             >
-              <option value="General">General</option>
-              <option value="Technical">Technical</option>
-              <option value="Behavioral">Behavioral</option>
+              <option value="General">📌 General</option>
+              <option value="Technical">💻 Technical</option>
+              <option value="Behavioral">🗣️ Behavioral</option>
             </select>
           </div>
           
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Suggested Answer (Optional)</label>
+          <div>
+            <label className="block text-sm font-medium text-[#B3B3B3] mb-1">Suggested Answer (Optional)</label>
             <textarea
               name="answer"
               value={formData.answer}
               onChange={handleChange}
-              rows="3"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+              rows="4"
+              className="spotify-input resize-none"
+              placeholder="Write a sample answer to help you prepare..."
             />
           </div>
           
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
+          <button type="submit" className="w-full spotify-button-primary">
             Add Question
           </button>
         </form>
       </div>
 
       {/* Questions List */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">My Question Bank</h2>
-        <p className="text-sm text-gray-500 mb-4">{questions.length} questions saved</p>
+      <div className="bg-[#181818] rounded-xl p-6 shadow-xl">
+        <h2 className="text-xl font-semibold text-white mb-2">My Question Bank</h2>
+        <p className="text-sm text-[#B3B3B3] mb-4">
+          {questions.length} {questions.length === 1 ? 'question' : 'questions'} saved
+        </p>
         
         {questions.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">No questions yet. Add your first interview question!</p>
+          <div className="text-center py-12 border-2 border-dashed border-[#282828] rounded-lg">
+            <p className="text-[#B3B3B3]">No questions yet.</p>
+            <p className="text-sm text-[#B3B3B3] mt-1">
+              Add your first interview question using the form on the left.
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3 max-h-[500px] overflow-y-auto">
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
             {questions.map((q) => (
-              <div key={q._id} className="border rounded-lg p-3">
-                <div className="flex justify-between items-start">
+              <div key={q._id} className="bg-[#282828] rounded-xl p-4 hover:bg-[#3e3e3e] transition-all">
+                <div className="flex justify-between items-start gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        q.category === 'Technical' ? 'bg-blue-100 text-blue-700' :
-                        q.category === 'Behavioral' ? 'bg-green-100 text-green-700' :
-                        'bg-gray-100 text-gray-700'
+                        q.category === 'Technical' ? 'bg-blue-500/20 text-blue-300' :
+                        q.category === 'Behavioral' ? 'bg-green-500/20 text-green-300' :
+                        'bg-gray-500/20 text-gray-300'
                       }`}>
-                        {q.category}
+                        {q.category === 'Technical' && '💻'} 
+                        {q.category === 'Behavioral' && '🗣️'} 
+                        {q.category === 'General' && '📌'} {q.category}
                       </span>
                     </div>
-                    <p className="font-medium text-gray-800">{q.question}</p>
+                    <p className="font-medium text-white">{q.question}</p>
                     {q.answer && (
-                      <details className="mt-2">
-                        <summary className="text-sm text-blue-600 cursor-pointer">Show answer</summary>
-                        <p className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">{q.answer}</p>
+                      <details className="mt-3">
+                        <summary className="text-sm text-[#1DB954] cursor-pointer hover:text-[#1ed760]">
+                          Show answer
+                        </summary>
+                        <p className="mt-2 text-sm text-[#B3B3B3] bg-[#181818] p-3 rounded-lg border border-[#3e3e3e]">
+                          {q.answer}
+                        </p>
                       </details>
                     )}
                   </div>
                   <button
                     onClick={() => handleDelete(q._id)}
-                    className="text-red-500 hover:text-red-700 text-sm ml-2"
+                    className="text-red-400 hover:text-red-300 text-sm transition"
                   >
-                    Delete
+                    🗑️
                   </button>
                 </div>
               </div>
