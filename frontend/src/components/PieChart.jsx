@@ -1,7 +1,5 @@
 // components/PieChart.jsx - Placeholder for status breakdown chart
-import React from 'react';
-
-function PieChart({ data }) {
+function PieChart() {
   return (
     <div className="bg-white p-4 rounded-lg shadow">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Status Breakdown</h3>

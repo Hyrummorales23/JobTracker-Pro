@@ -1,5 +1,5 @@
 // pages/Dashboard.jsx - Spotify-inspired Dashboard with tab navigation
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import JobForm from '../components/JobForm';
 import JobList from '../components/JobList';

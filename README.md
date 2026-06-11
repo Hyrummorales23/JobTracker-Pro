@@ -1,75 +1,135 @@
 # JobTracker Pro
 
-JobTracker Pro is a full-stack web application designed to help job seekers organize their job search in one place. Users will be able to track applications, manage interview notes, prepare with an interview question bank, and review job-search progress through dashboard charts.
+JobTracker Pro is a full-stack web application that helps job seekers organize their job search in one place. Users can securely track job applications, manage interview notes, prepare with an interview question bank, and review their progress through dashboard charts.
 
-## Project Goals
+## Live Demo
 
-- Keep each user's job application data private and secure.
-- Allow users to add, view, edit, and delete job applications.
-- Organize applications by status with a Kanban board.
-- Store notes for interviews, recruiter contacts, salary details, and follow-up reminders.
-- Help users practice with saved technical and behavioral interview questions.
-- Show progress with charts for weekly applications, success rate, and status breakdown.
+- Frontend: https://job-tracker-pro-xi.vercel.app/login
+- Backend health check: https://jobtracker-pro-api.onrender.com/api/health
 
-## Planned Tech Stack
+The backend is hosted on Render and may take a short time to respond after a period of inactivity.
 
-- Frontend: React with Vite
-- Backend: Node.js and Express
+## Features
+
+- User signup, login, logout, and private data with JWT authentication
+- Create, view, edit, and delete job applications
+- Search applications by company or job title
+- Filter applications by status
+- Drag-and-drop Kanban board with Wishlist, Applied, Interview, Offer, and Rejected columns
+- Notes for interviews, recruiter contacts, salary details, and follow-up reminders
+- Interview question bank with categories and suggested answers
+- Dashboard charts for weekly applications, status breakdown, and success rate
+
+## Technology
+
+- Frontend: React, Vite, Tailwind CSS
+- Backend: Node.js, Express
 - Database: MongoDB Atlas
 - Authentication: JSON Web Tokens
-- Styling: Tailwind CSS
-- Charts: Recharts or Chart.js
-- Version control: Git and GitHub
+- Charts: Recharts
+- Drag and drop: dnd-kit
+- Deployment: Vercel and Render
 
-## Sprint 1 Focus
+## Local Setup
 
-The first sprint focuses on project setup, repository structure, initial React and Node.js setup, MongoDB connection planning, basic authentication work, and README updates.
+### Prerequisites
+
+- Node.js and npm
+- Access to a MongoDB Atlas database
+
+### Backend
+
+1. Open a terminal in the `backend` folder.
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `backend/.env` file:
+
+```env
+PORT=5001
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_secure_jwt_secret
+```
+
+4. Start the backend:
+
+```bash
+npm run dev
+```
+
+5. Confirm that it is working at:
+
+```text
+http://localhost:5001/api/health
+```
+
+### Frontend
+
+1. Open another terminal in the `frontend` folder.
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the frontend:
+
+```bash
+npm run dev
+```
+
+4. Open the local URL shown by Vite, usually:
+
+```text
+http://localhost:5173
+```
+
+The frontend automatically uses the local API during development and the Render API in production.
+
+## Testing the Deployed App
+
+1. Open the frontend link and create an account or log in.
+2. Add, edit, search, filter, and delete a job application.
+3. Move a job between Kanban columns and confirm that its status changes.
+4. Open the charts tab and confirm that the application data is displayed.
+5. Add and delete an interview question in the Question Bank tab.
+6. Log out and confirm that protected pages redirect to the login screen.
+
+## Sprint Progress
+
+### Sprint 1
+
+- Set up the repository and project structure
+- Initialized the React and Node.js applications
+- Added MongoDB and JWT authentication
+- Added the project description and team quotes
+
+### Sprint 2
+
+- Completed job application CRUD
+- Added notes to job applications
+- Connected the frontend to the backend API
+- Added automatic job list refresh
+
+### Sprint 3
+
+- Added the drag-and-drop Kanban board
+- Added dashboard charts and success-rate statistics
+- Connected charts and Kanban status updates to backend data
+
+### Sprint 4
+
+- Added the Interview Question Bank
+- Added job search and status filtering
+- Configured production API URLs
+- Deployed the frontend to Vercel and backend to Render
+- Tested authentication, job CRUD, Kanban status updates, and question bank operations locally and in production
 
 ## Team Quotes
 
 - "The best way to predict the future is to create it." - Peter Drucker
 - "First, solve the problem. Then, write the code." - John Johnson
 - "Success is the sum of small efforts, repeated day in and day out." - Robert Collier
-
-## Sprint 2 Progress (Week 4)
-
-### Completed Features
-- ✅ User Authentication (Signup/Login with JWT)
-- ✅ Password Hashing with bcrypt
-- ✅ Full Job CRUD (Create, Read, Update, Delete)
-- ✅ Notes per application
-- ✅ MongoDB Atlas integration
-- ✅ Responsive Dashboard with JobForm and JobList
-
-### Sprint 2 Tasks Completed
-- Created Job model and API routes
-- Built functional JobForm, JobList, and JobCard components
-- Connected frontend to backend with Axios
-- Implemented auto-refresh after adding jobs
-
-## Sprint 3 Progress (Week 5)
-
-### Completed Features
-- ✅ Kanban Board with drag-and-drop functionality
-- ✅ Dashboard Charts (applications per week, status breakdown)
-- ✅ Job status updates via drag-and-drop
-- ✅ Visual data representation with Recharts
-
-### Sprint 3 Tasks Completed
-- Installed react-beautiful-dnd and recharts
-- Created KanbanBoard component with draggable job cards
-- Implemented drag-and-drop to update job status in database
-- Added BarChart and PieChart components
-- Connected charts to backend data
-
-## Live Demo
-
-- **Frontend:** https://job-tracker-pro-xi.vercel.app/login
-- **Backend API:** https://jobtracker-pro-api.onrender.com/api/health
-
-## Deployment
-
-This app is deployed on:
-- **Frontend:** Vercel
-- **Backend:** Render
-- **Database:** MongoDB Atlas

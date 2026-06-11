@@ -1,5 +1,5 @@
 // components/JobList.jsx - Spotify-inspired job list with search/filter
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import JobCard from './JobCard';
 import { API_URL } from '../config';
@@ -27,6 +27,7 @@ function JobList() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadJobs();
   }, []);
 

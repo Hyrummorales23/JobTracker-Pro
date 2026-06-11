@@ -1,5 +1,5 @@
 // pages/Login.jsx - Spotify-inspired Login/Signup page
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config';

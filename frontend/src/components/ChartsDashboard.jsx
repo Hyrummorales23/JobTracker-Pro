@@ -1,5 +1,5 @@
 // components/ChartsDashboard.jsx - Spotify-inspired charts dashboard
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 
@@ -15,10 +15,6 @@ function ChartsDashboard() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadJobs();
-  }, []);
-
   const loadJobs = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -32,6 +28,11 @@ function ChartsDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadJobs();
+  }, []);
 
   const getWeeklyData = () => {
     const weeklyMap = new Map();
@@ -73,7 +74,7 @@ function ChartsDashboard() {
     };
     
     jobs.forEach(job => {
-      if (statusCounts.hasOwnProperty(job.status)) {
+      if (Object.hasOwn(statusCounts, job.status)) {
         statusCounts[job.status]++;
       }
     });

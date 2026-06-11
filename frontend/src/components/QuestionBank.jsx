@@ -1,5 +1,5 @@
 // components/QuestionBank.jsx - Spotify-inspired interview question bank
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 
@@ -29,6 +29,7 @@ function QuestionBank() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadQuestions();
   }, []);
 

@@ -1,5 +1,5 @@
 // components/KanbanBoard.jsx - Spotify-inspired drag-and-drop kanban board
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -132,6 +132,7 @@ function KanbanBoard() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadJobs();
   }, []);
 

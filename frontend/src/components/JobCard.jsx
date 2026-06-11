@@ -1,5 +1,5 @@
 // components/JobCard.jsx - Spotify-inspired job card with edit/delete
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 

@@ -1,5 +1,5 @@
 // components/JobForm.jsx - Spotify-inspired form to add job applications
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
 

@@ -1,7 +1,5 @@
 // components/BarChart.jsx - Placeholder for applications per week chart
-import React from 'react';
-
-function BarChart({ data }) {
+function BarChart() {
   return (
     <div className="bg-white p-4 rounded-lg shadow">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Applications Per Week</h3>
